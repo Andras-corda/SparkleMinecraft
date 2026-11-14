@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparkle</title>
+<meta name="description" content="Éditeur de systèmes de particules pour les mods Minecraft (Forge, NeoForge, Fabric).">
+<link rel="icon" type="image/png" href="vscode/images/icon.png">
+<style>
+:root { --bg: #fff; --text: #222; --muted: #666; --line: #ddd; --code: #f4f4f4; --link: #0b5cad; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #161616; --text: #ddd; --muted: #999; --line: #333; --code: #222; --link: #6aa9ff; }
+}
+:root[data-theme="dark"] { --bg: #161616; --text: #ddd; --muted: #999; --line: #333; --code: #222; --link: #6aa9ff; }
+
+body {
+  margin: 0 auto; max-width: 760px; padding: 32px 16px 48px;
+  background: var(--bg); color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: var(--link); }
+h1 { display: flex; align-items: center; gap: 12px; font-size: 28px; margin: 0 0 4px; }
+h1 img { width: 40px; height: 40px; }
+h2 { font-size: 20px; margin: 40px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 16px; margin: 20px 0 4px; }
+.muted { color: var(--muted); }
+img.shot { max-width: 100%; border: 1px solid var(--line); margin-top: 16px; }
+code, pre { font-family: ui-monospace, Consolas, monospace; font-size: 14px; }
+:not(pre) > code { background: var(--code); padding: 1px 4px; }
+pre { background: var(--code); padding: 12px; overflow-x: auto; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1><img src="vscode/images/icon.png" alt="">Sparkle</h1>
+<p class="muted">Systèmes de particules pour les mods Minecraft : Forge, NeoForge et Fabric.</p>
+
+<p>
+  <a href="https://marketplace.visualstudio.com/items?itemName=mineengine.sparkle-particles">Extension VS Code</a> ·
+  <a href="https://github.com/Andras-corda/SparkleMinecraft">GitHub</a> ·
+  <a href="#changelog">Changelog</a>
+</p>
+
+<p>
+  Sparkle est un éditeur visuel de systèmes de particules, avec des modèles et un aperçu 3D. Un petit runtime Java
+  les joue ensuite en jeu, le même pour les trois loaders.
+</p>
+
+<img class="shot" src="vscode/images/editor.png" alt="L'éditeur Sparkle dans VS Code">
+
+<h2>Fonctions</h2>
+<ul>
+  <li><strong>Nouveau système</strong> à partir d'un modèle : Étincelles, Rayon, Fontaine, Rebond, Ruban ou Vide.</li>
+  <li><strong>Éditeur</strong> pour les fichiers <code>assets/&lt;namespace&gt;/sparkle/*.json</code> : émetteurs, modules,
+    aperçu 3D animé. Ctrl+Z, l'enregistrement et Git fonctionnent comme pour n'importe quel fichier.</li>
+  <li><strong>Paramètres utilisateur</strong> : un réglage peut être donné par le code du mod à chaque lecture.</li>
+  <li><strong>Installation du runtime</strong> dans le mod : le loader, la version et le package sont détectés.
+    Un fichier modifié à la main n'est jamais remplacé sans question.</li>
+  <li><strong>Copie du code</strong> qui joue le système.</li>
+</ul>
+
+<h2>En jeu</h2>
+<p>Côté serveur :</p>
+<pre><code>Sparkle.play(level, "fire", x, y, z);      // "&lt;mod id&gt;:fire"
+Sparkle.playOn(entity, "aura");            // suit l'entité
+Sparkle.stopOn(entity);
+Sparkle.play(level, "beam", x, y, z, SparkleParameters.create()
+        .vector("end", 0, 1, 8)
+        .color("tint", 0xFF8800));</code></pre>
+<p>
+  Rien à écrire côté client, et les joueurs n'installent rien. Le système est relu après <strong>F3+T</strong> :
+  on peut le modifier dans VS Code et le revoir en jeu sans relancer Minecraft.
+</p>
+
+<h2>Versions</h2>
+<div class="table">
+<table>
+  <tr><th>Loader</th><th>Testé (compilé)</th><th>Accepté avec un avertissement</th><th>Refusé</th></tr>
+  <tr><td>Forge</td><td>1.20.1, 1.21.1</td><td>1.20.2 à 1.20.6, après 1.21.1</td><td>avant 1.20</td></tr>
+  <tr><td>NeoForge</td><td>1.21.1</td><td>1.20.1, 1.20.5 à 1.21, après 1.21.1</td><td>1.20.2 à 1.20.4, avant 1.20</td></tr>
+  <tr><td>Fabric</td><td>1.20.1, 1.21.1</td><td>1.20.2 à 1.20.6, après 1.21.1</td><td>mappings Yarn, avant 1.20</td></tr>
+</table>
+</div>
+<p class="muted">Pas encore essayé dans un vrai client Minecraft : le runtime compile, mais aucun système n'a encore été joué en jeu.</p>
+
+<h2>Autres IDE</h2>
+<p>IntelliJ IDEA, Blockbench et MCreator : à venir.</p>
+
+<h2 id="changelog">Changelog</h2>
+<div id="changelogList"><p class="muted">Chargement…</p></div>
+
+<footer>
+  Licence MIT · <a href="https://github.com/Andras-corda/SparkleMinecraft/issues">Signaler un problème</a>
+</footer>
+
+<script>
+// Affiche vscode/CHANGELOG.md
+(function () {
+  var box = document.getElementById('changelogList');
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function inline(s) {
+    return esc(s)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  }
+  function render(md) {
+    var lines = md.replace(/\r/g, '').split('\n'), html = '', inList = false;
+    function closeList() { if (inList) { html += '</ul>'; inList = false; } }
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i], m;
+      if (/^#\s/.test(l)) continue;
+      if ((m = /^##\s+(.*)/.exec(l))) { closeList(); html += '<h3>' + inline(m[1]) + '</h3>'; continue; }
+      if ((m = /^\s*[-*]\s+(.*)/.exec(l))) {
+        var item = m[1];
+        while (i + 1 < lines.length && /^\s{2,}\S/.test(lines[i + 1]) && !/^\s*[-*]\s/.test(lines[i + 1])) item += ' ' + lines[++i].trim();
+        if (!inList) { html += '<ul>'; inList = true; }
+        html += '<li>' + inline(item) + '</li>'; continue;
+      }
+      closeList();
+      if (l.trim()) html += '<p>' + inline(l) + '</p>';
+    }
+    closeList();
+    return html;
+  }
+  fetch('vscode/CHANGELOG.md', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(function (md) { box.innerHTML = render(md); })
+    .catch(function () {
+      box.innerHTML = '<p><a href="https://github.com/Andras-corda/SparkleMinecraft/blob/main/vscode/CHANGELOG.md">Lire le changelog sur GitHub</a></p>';
+    });
+})();
+</script>
+</body>
+</html>

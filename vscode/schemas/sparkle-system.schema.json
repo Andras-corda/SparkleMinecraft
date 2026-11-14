@@ -1,0 +1,669 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sparkle particle system",
+  "description": "A particle system played by the Sparkle runtime of the mod: Sparkle.play(level, \"<namespace>:<name>\", x, y, z).",
+  "type": "object",
+  "required": [
+    "emitters"
+  ],
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1
+    },
+    "emitters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "modules"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "preview": {
+            "type": "boolean",
+            "description": "Shown in the preview of the editor; no effect in the game."
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "Lifecycle",
+                    "Identity",
+                    "SpawnParticles",
+                    "Velocity",
+                    "Gravity",
+                    "Collision",
+                    "Scale",
+                    "Texture",
+                    "GenerateDeathEvent",
+                    "GenerateTimeEvent",
+                    "GenerateLocationEvent",
+                    "GenerateCollisionEvent",
+                    "ReceiveDeathEvent"
+                  ]
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "values": {
+                  "type": "object"
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Lifecycle"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "Once",
+                              "Loop",
+                              "Infinite"
+                            ],
+                            "description": "Mode. Default: Once"
+                          },
+                          "duration": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Duration (s). Default: 2"
+                          },
+                          "loops": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Loops. Default: 3"
+                          },
+                          "delay": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Delay (s). Default: 0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Identity"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "ID. Default: 1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "SpawnParticles"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "Burst",
+                              "Continuous"
+                            ],
+                            "description": "Spawn. Default: Burst"
+                          },
+                          "count": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Number of particles. Default: 30"
+                          },
+                          "shape": {
+                            "enum": [
+                              "Point",
+                              "Sphere",
+                              "Box",
+                              "Line"
+                            ],
+                            "description": "Shape. Default: Point"
+                          },
+                          "offset": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "Coordinates. Default: 0 0 0"
+                          },
+                          "radius": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Radius. Default: 0.5"
+                          },
+                          "size": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "Size. Default: 1 1 1"
+                          },
+                          "lineEnd": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "End of the line. Default: 0 0 5"
+                          },
+                          "lifetimeMin": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Lifetime min (s). Default: 1"
+                          },
+                          "lifetimeMax": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Lifetime max (s). Default: 1.5"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Velocity"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "Direction",
+                              "Cone",
+                              "Radial"
+                            ],
+                            "description": "Direction. Default: Direction"
+                          },
+                          "direction": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "Vector. Default: 0 1 0"
+                          },
+                          "angle": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Cone angle (\u00b0). Default: 30"
+                          },
+                          "speedMin": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Speed min (blocks/s). Default: 1"
+                          },
+                          "speedMax": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Speed max (blocks/s). Default: 2"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Gravity"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "acceleration": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "Acceleration (blocks/s\u00b2). Default: 0 -9.8 0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Collision"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "bounce": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Bounce. Default: 0.4"
+                          },
+                          "die": {
+                            "anyOf": [
+                              {
+                                "enum": [
+                                  "true",
+                                  "false"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "pattern": "^@[0-9a-f]+$",
+                                "description": "Bound to a user parameter."
+                              }
+                            ],
+                            "description": "Dies on collision. Default: false"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Scale"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "Fixed",
+                              "OverLife",
+                              "Random"
+                            ],
+                            "description": "Mode. Default: Fixed"
+                          },
+                          "value": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Size (blocks). Default: 0.2"
+                          },
+                          "start": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Size at birth. Default: 0.3"
+                          },
+                          "end": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Size at death. Default: 0"
+                          },
+                          "min": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Size min. Default: 0.1"
+                          },
+                          "max": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Size max. Default: 0.3"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "Texture"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "texture": {
+                            "type": "string",
+                            "description": "Textures. Default: minecraft:glitter_7"
+                          },
+                          "spriteMode": {
+                            "enum": [
+                              "Random",
+                              "OverLife"
+                            ],
+                            "description": "With several textures. Default: Random"
+                          },
+                          "tint": {
+                            "type": "string",
+                            "pattern": "^#[0-9a-fA-F]{6}$|^@[0-9a-f]+$",
+                            "description": "Tint. Default: #FFFFFF"
+                          },
+                          "glow": {
+                            "anyOf": [
+                              {
+                                "enum": [
+                                  "true",
+                                  "false"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "pattern": "^@[0-9a-f]+$",
+                                "description": "Bound to a user parameter."
+                              }
+                            ],
+                            "description": "Glows in the dark. Default: true"
+                          },
+                          "translucent": {
+                            "anyOf": [
+                              {
+                                "enum": [
+                                  "true",
+                                  "false"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "pattern": "^@[0-9a-f]+$",
+                                "description": "Bound to a user parameter."
+                              }
+                            ],
+                            "description": "Translucent. Default: true"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "GenerateDeathEvent"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "chance": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Chance (%). Default: 100"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "GenerateTimeEvent"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "Once",
+                              "Repeat"
+                            ],
+                            "description": "When. Default: Once"
+                          },
+                          "time": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Time (s). Default: 0.5"
+                          },
+                          "chance": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Chance (%). Default: 100"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "GenerateLocationEvent"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "shape": {
+                            "enum": [
+                              "Sphere",
+                              "Box"
+                            ],
+                            "description": "Zone. Default: Sphere"
+                          },
+                          "center": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "Center of the zone. Default: 0 2 0"
+                          },
+                          "radius": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Radius. Default: 1"
+                          },
+                          "size": {
+                            "type": "string",
+                            "pattern": "^\\s*@[0-9a-f]+\\s*$|^\\s*-?[0-9.eE+-]+([\\s,;]+-?[0-9.eE+-]+){2}\\s*$",
+                            "description": "Size. Default: 2 2 2"
+                          },
+                          "chance": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Chance (%). Default: 100"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "GenerateCollisionEvent"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "chance": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Chance (%). Default: 100"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "ReceiveDeathEvent"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "event": {
+                            "enum": [
+                              "Death",
+                              "Time",
+                              "Location",
+                              "Collision"
+                            ],
+                            "description": "Event. Default: Death"
+                          },
+                          "source": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Emitter ID. Default: 1"
+                          },
+                          "count": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Particles per event. Default: 5"
+                          },
+                          "atDeath": {
+                            "anyOf": [
+                              {
+                                "enum": [
+                                  "true",
+                                  "false"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "pattern": "^@[0-9a-f]+$",
+                                "description": "Bound to a user parameter."
+                              }
+                            ],
+                            "description": "At the place of the event. Default: true"
+                          },
+                          "inheritVelocity": {
+                            "type": "string",
+                            "pattern": "^\\s*-?[0-9.eE+-]+\\s*$|^@[0-9a-f]+$",
+                            "description": "Inherited velocity (%). Default: 0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "userParameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name given by the code: SparkleParameters.create().number(\"<name>\", 2)."
+          },
+          "type": {
+            "enum": [
+              "Number",
+              "Vector",
+              "Color",
+              "Boolean"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "The value when the code gives none."
+          }
+        }
+      }
+    }
+  }
+}

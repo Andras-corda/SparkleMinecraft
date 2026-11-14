@@ -1,0 +1,380 @@
+/* Editor of the Sparkle systems: the colors and fonts of the VS Code theme. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: var(--vscode-foreground);
+    background: var(--vscode-editor-background);
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    overflow: hidden;
+}
+
+#app {
+    height: 100%;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(180px, 250px) minmax(0, 1fr) minmax(260px, 360px);
+    height: 100%;
+}
+
+aside {
+    overflow-y: auto;
+    padding: 8px 10px;
+    background: var(--vscode-sideBar-background);
+}
+
+.side {
+    border-right: 1px solid var(--vscode-panel-border);
+}
+
+.inspector {
+    border-left: 1px solid var(--vscode-panel-border);
+    overflow-x: hidden;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.system .key {
+    font-family: var(--vscode-editor-font-family);
+    font-weight: 600;
+    word-break: break-all;
+    margin: 4px 0;
+}
+
+.system .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+button.link {
+    padding: 1px 0;
+    background: transparent;
+    border: none;
+    color: var(--vscode-textLink-foreground);
+    text-align: left;
+}
+
+button.link:hover {
+    background: transparent;
+    text-decoration: underline;
+}
+
+h2 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 12px 0 6px;
+    color: var(--vscode-sideBarTitle-foreground);
+}
+
+h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    margin: 14px 0 4px;
+    opacity: 0.7;
+}
+
+button, select, input {
+    font-family: inherit;
+    font-size: inherit;
+    color: var(--vscode-input-foreground);
+    background: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border, transparent);
+    border-radius: 2px;
+}
+
+button {
+    color: var(--vscode-button-secondaryForeground);
+    background: var(--vscode-button-secondaryBackground);
+    padding: 3px 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--vscode-button-secondaryHoverBackground);
+}
+
+button.icon {
+    padding: 0 5px;
+    background: transparent;
+    border: none;
+    color: var(--vscode-icon-foreground);
+    visibility: hidden;
+}
+
+.row:hover button.icon, .row.selected button.icon, .texture button.icon {
+    visibility: visible;
+}
+
+input[type="number"] {
+    width: 70px;
+}
+
+input[type="color"] {
+    padding: 0;
+    width: 48px;
+    height: 22px;
+}
+
+select {
+    padding: 2px;
+}
+
+input:focus, select:focus, button:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.row:hover {
+    background: var(--vscode-list-hoverBackground);
+}
+
+.row.selected {
+    color: var(--vscode-list-activeSelectionForeground);
+    background: var(--vscode-list-activeSelectionBackground);
+}
+
+.row .name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.badge {
+    font-size: 10px;
+    padding: 0 5px;
+    border-radius: 8px;
+    color: var(--vscode-badge-foreground);
+    background: var(--vscode-badge-background);
+}
+
+.parameter {
+    flex-wrap: wrap;
+    cursor: default;
+}
+
+.param-name {
+    width: 90px;
+}
+
+.muted {
+    opacity: 0.7;
+    font-size: 12px;
+}
+
+section > select {
+    margin-top: 6px;
+    width: 100%;
+}
+
+.problems {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.problems li {
+    font-size: 12px;
+    padding: 3px 0 3px 8px;
+    border-left: 3px solid;
+    margin-bottom: 4px;
+    cursor: pointer;
+}
+
+.problems li.error {
+    border-color: var(--vscode-editorError-foreground);
+}
+
+.problems li.warning {
+    border-color: var(--vscode-editorWarning-foreground);
+}
+
+.preview-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.preview-bar label {
+    white-space: nowrap;
+}
+
+.preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+}
+
+.preview canvas {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    cursor: grab;
+    touch-action: none;
+}
+
+.preview .stats {
+    flex-basis: 100%;
+    font-family: var(--vscode-editor-font-family);
+    font-size: 12px;
+    opacity: 0.8;
+    white-space: pre;
+}
+
+.preview-hint {
+    position: absolute;
+    bottom: 6px;
+    left: 8px;
+    font-size: 11px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.head {
+    margin: 4px 0 8px;
+}
+
+.emitter-name {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 4px;
+}
+
+.module {
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 3px;
+    margin-bottom: 6px;
+}
+
+.module.off .module-title {
+    opacity: 0.55;
+}
+
+.module-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.chevron {
+    width: 10px;
+    opacity: 0.7;
+}
+
+.module-body {
+    padding: 2px 8px 8px;
+}
+
+.description {
+    font-size: 12px;
+    opacity: 0.65;
+    margin-bottom: 6px;
+}
+
+.setting {
+    display: grid;
+    grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.setting label {
+    font-size: 12px;
+}
+
+.setting .value {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.vector {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.vector input {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+}
+
+.link {
+    max-width: 90px;
+    font-size: 11px;
+}
+
+.bound {
+    font-style: italic;
+    color: var(--vscode-textLink-foreground);
+}
+
+.textures {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+}
+
+.texture {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.texture input {
+    flex: 1;
+    min-width: 0;
+}
+
+.texture img, .texture .dot {
+    width: 16px;
+    height: 16px;
+    image-rendering: pixelated;
+    flex: none;
+}
+
+.texture .dot {
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #aaa 40%, transparent 70%);
+}
+
+.error {
+    padding: 20px;
+    color: var(--vscode-errorForeground);
+}

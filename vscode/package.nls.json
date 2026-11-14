@@ -1,0 +1,9 @@
+{
+  "displayName": "Sparkle particles for Minecraft mods",
+  "description": "Particle systems for Minecraft mods (Forge, NeoForge, Fabric): a visual editor with templates and a 3D preview, and the runtime that plays them in the game.",
+  "editor.displayName": "Sparkle particle system",
+  "command.newSystem": "New particle system",
+  "command.installRuntime": "Install or update the runtime in the mod",
+  "command.copyPlayCode": "Copy the code that plays the system",
+  "command.openAsText": "Open the system as text"
+}

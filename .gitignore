@@ -1,0 +1,33 @@
+# Node
+node_modules/
+dist/
+out/
+*.tsbuildinfo
+npm-debug.log*
+.npmrc
+
+# Vscode
+*.vsix
+
+# Gradle
+.gradle/
+build/
+.kotlin/
+*.class
+
+# MCreator
+mcreator/**/*.zip
+
+# IDE 
+.idea/
+*.iml
+.vscode-test/
+.run/
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+.env
+.env.*
+*.pat

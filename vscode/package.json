@@ -1,0 +1,119 @@
+{
+  "name": "sparkle-particles",
+  "displayName": "%displayName%",
+  "description": "%description%",
+  "version": "0.1.0",
+  "publisher": "mineengine",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Andras-corda/SparkleMinecraft.git",
+    "directory": "vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/Andras-corda/SparkleMinecraft/issues"
+  },
+  "homepage": "https://github.com/Andras-corda/SparkleMinecraft/tree/main/vscode#readme",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "minecraft",
+    "particles",
+    "forge",
+    "neoforge",
+    "fabric"
+  ],
+  "main": "./dist/extension.js",
+  "l10n": "./l10n",
+  "activationEvents": [
+    "workspaceContains:**/assets/*/sparkle/*.json"
+  ],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "sparkle.systemEditor",
+        "displayName": "%editor.displayName%",
+        "selector": [
+          {
+            "filenamePattern": "**/assets/*/sparkle/*.json"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "sparkle.newSystem",
+        "title": "%command.newSystem%",
+        "category": "Sparkle"
+      },
+      {
+        "command": "sparkle.installRuntime",
+        "title": "%command.installRuntime%",
+        "category": "Sparkle"
+      },
+      {
+        "command": "sparkle.copyPlayCode",
+        "title": "%command.copyPlayCode%",
+        "category": "Sparkle"
+      },
+      {
+        "command": "sparkle.openAsText",
+        "title": "%command.openAsText%",
+        "category": "Sparkle"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "sparkle.newSystem",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation@9"
+        },
+        {
+          "command": "sparkle.copyPlayCode",
+          "when": "resourceExtname == .json && resourceDirname =~ /sparkle$/",
+          "group": "9_cutcopypaste"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "sparkle.openAsText",
+          "when": "activeCustomEditorId == sparkle.systemEditor",
+          "group": "navigation"
+        }
+      ]
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "**/assets/*/sparkle/*.json",
+        "url": "./schemas/sparkle-system.schema.json"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node esbuild.mjs --tests && node --test \"out/test/*.test.js\"",
+    "package": "npx --yes @vscode/vsce package --no-dependencies --baseContentUrl https://github.com/Andras-corda/SparkleMinecraft/blob/main/vscode --baseImagesUrl https://github.com/Andras-corda/SparkleMinecraft/raw/main/vscode",
+    "publish": "npx --yes @vscode/vsce publish --no-dependencies --baseContentUrl https://github.com/Andras-corda/SparkleMinecraft/blob/main/vscode --baseImagesUrl https://github.com/Andras-corda/SparkleMinecraft/raw/main/vscode",
+    "build:integration": "node esbuild.mjs --integration",
+    "vscode:prepublish": "node esbuild.mjs"
+  },
+  "dependencies": {
+    "jsonc-parser": "3.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.6",
+    "@types/vscode": "1.90.0",
+    "esbuild": "0.24.0",
+    "typescript": "5.6.3"
+  }
+}

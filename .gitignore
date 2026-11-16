@@ -35,4 +35,4 @@ desktop.ini
 .intellijPlatform/
 
 # Compile tests of the runtime
-vscode/test-runtime/work/
+.test-runtime/

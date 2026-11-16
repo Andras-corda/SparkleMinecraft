@@ -2,7 +2,7 @@
 // plugin of the loader, installs the runtime as the extension does, and compiles it.
 //
 //   node test-runtime/compile.mjs fabric:1.21.4 neoforge:1.21.4 forge:1.21.4
-//   node test-runtime/compile.mjs --keep fabric:26.1      (keeps test-runtime/work/<loader>-<version> to look at)
+//   node test-runtime/compile.mjs --keep fabric:26.1      (keeps .test-runtime/<loader>-<version> at the root of the repository to look at)
 //
 // Gradle runs on JAVA25_HOME (Java 25 or later: Fabric Loom, ModDevGradle, ForgeGradle 7) or on JAVA21_HOME (Java 21:
 // ForgeGradle 6, up to Minecraft 1.21.5); both default to JAVA_HOME. The Java of Minecraft itself (21 or 25) is
@@ -16,7 +16,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
-const work = join(here, 'work');
+// Outside the extension folder: vsce would read (and package) its thousands of Gradle files.
+const work = join(root, '..', '.test-runtime');
 const args = process.argv.slice(2);
 const keep = args.includes('--keep');
 const targets = args.filter(a => !a.startsWith('--'));

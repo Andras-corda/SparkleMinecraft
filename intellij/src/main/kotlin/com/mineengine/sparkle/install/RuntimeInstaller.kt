@@ -27,7 +27,7 @@ import kotlin.io.path.writeText
  */
 object RuntimeInstaller {
     /** Version of the runtime written in the manifest. */
-    const val RUNTIME_VERSION = "0.1.0"
+    const val RUNTIME_VERSION = "0.2.0"
 
     private fun format(message: Message) = L10n.t(message.text, *message.args.toTypedArray())
 

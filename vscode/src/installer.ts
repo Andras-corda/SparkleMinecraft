@@ -5,7 +5,7 @@ import { backupFolder, Manifest, MANIFEST_PATH, parseManifest, patchFabricModJso
 import { detectProject, fillTemplate, loaderName, Message, runtimeFolders, runtimePackage, support } from './shared/project';
 
 /** Version of the runtime written in the manifest. */
-const RUNTIME_VERSION = '0.1.0';
+const RUNTIME_VERSION = '0.2.0';
 
 /** SHA-256 of a text, line endings ignored (git may change them). */
 export function hash(text: string): string {

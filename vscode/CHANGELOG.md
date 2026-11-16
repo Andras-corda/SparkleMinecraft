@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
 - The runtime supports Minecraft 1.21.2 to 26.3 on Forge, NeoForge and Fabric. It compiles on every version of
   each loader from 1.21.1 to 26.3 (and on 1.20.1), checked by the new compile test `test-runtime/compile.mjs`.

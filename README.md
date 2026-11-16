@@ -1,6 +1,6 @@
-# Plugins Sparkle pour Ide
+# Plugins Sparkle pour editeurs de text et Mcreator
 
-Outil de création de particules complexe pour le modding minecraft, intégré directement dans les ide via le systeme de pluggin.
+Outil de création de particules complexe pour le modding minecraft, intégré directement dans les app via le systeme de pluggin/Module
 
 Utilisable avec : **Forge, NeoForge et Fabric**
 

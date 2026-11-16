@@ -74,17 +74,26 @@ Players install nothing: the runtime is part of your mod.
 | `runtime/common` | always: API, system reader, particles |
 | `runtime/mc1.20` | Minecraft 1.20 to 1.20.4 (old particle network format) |
 | `runtime/mc1.21` | Minecraft 1.20.5 and later (`MapCodec` and `StreamCodec`) |
+| `runtime/mc1.21.9` | Minecraft 1.21.9 and later: replaces the particle of `common` (`SingleQuadParticle`) |
 | `runtime/forge`, `runtime/neoforge`, `runtime/fabric` | the loader of the project |
+| `runtime/neoforge-1.21.4` | NeoForge 1.21.4 and later: replaces the two classes of `neoforge` |
+
+A file of a later folder replaces the file of the same name of an earlier one. The names that Mojang or a loader
+changed are replaced when the runtime is written: `ResourceLocation` becomes `Identifier` from 1.21.11,
+`getLightColor` becomes `getLightCoords` from 26.1, Forge 1.21.6 and later takes the `SubscribeEvent` of EventBus 7,
+and Fabric API 26.1 and later its `ParticleProviderRegistry`.
 
 ## Supported versions
 
 | Loader | Tested (compiled) | Accepted with a warning | Refused |
 | --- | --- | --- | --- |
-| Forge | 1.20.1, 1.21.1 | 1.20.2 to 1.20.6, after 1.21.1 | before 1.20 |
-| NeoForge | 1.21.1 | 1.20.1 (handled as Forge), 1.20.5 to 1.21, after 1.21.1 | 1.20.2 to 1.20.4, before 1.20 |
-| Fabric | 1.20.1, 1.21.1 | 1.20.2 to 1.20.6, after 1.21.1 | **Yarn** mappings, before 1.20 |
+| Forge | 1.20.1, every version from 1.21.1 to 26.3 | other 1.20.x, 1.21, after 26.3 | before 1.20 |
+| NeoForge | 1.20.6, every version from 1.21.1 to 26.3 | 1.20.1 (handled as Forge), 1.20.5, 1.21, after 26.3 | 1.20.2 to 1.20.4, before 1.20 |
+| Fabric | 1.20.1, 1.20.4, every version from 1.21.1 to 26.3 | other 1.20.x, 1.21, after 26.3 | **Yarn** mappings, before 1.20 |
 
-"Tested" means that the runtime compiles without warnings in a real Gradle project of that loader and version.
+"Tested" means that the runtime compiles in a real Gradle project of that loader and version, made by
+`test-runtime/compile.mjs` with the Gradle plugin of the loader (Fabric Loom, ModDevGradle, ForgeGradle).
+Minecraft 26.1 and later is not obfuscated: a Fabric project needs no mappings there.
 
 ## Safe installation
 
@@ -97,8 +106,8 @@ Players install nothing: the runtime is part of your mod.
 
 ## Known limitations
 
-- **Not yet played in the game.** The runtime compiles on the 5 tested combinations and the preview follows the
-  same rules, but in-game rendering has not been checked yet.
+- **Not yet played in the game.** The runtime compiles on every tested version and the preview follows the same
+  rules, but in-game rendering has not been checked yet, on any version.
 - **Fabric with Yarn** is refused. The runtime uses Mojang names: `build.gradle` needs
   `mappings loom.officialMojangMappings()`. Fabric API is required.
 - **Multi-loader projects** (Architectury, MultiLoader): the runtime can be installed in each loader subproject,
@@ -121,6 +130,11 @@ npm run package      # builds the .vsix
 
 - The unit tests also check that the TypeScript catalog, the Java runtime and the JSON schema know exactly the
   same settings.
+- **Compile test of the runtime**: `node test-runtime/compile.mjs fabric:1.21.4 neoforge:26.3 forge:1.21.8 ...` makes
+  a small mod project for each loader and version, installs the runtime as the extension does, and compiles it with
+  Gradle. Gradle runs on `JAVA25_HOME` (Java 25 or later) or, for ForgeGradle 6 (Forge 1.21.1 and before), on
+  `JAVA21_HOME`. The first build of a version downloads Minecraft and the loader. After a successful run, add the
+  versions to `TESTED` in `src/shared/project.ts` (and in the IntelliJ plugin, `ProjectDetection.kt`).
 - **Integration test**: run `npm run build:integration`, then start VS Code with
   `--extensionDevelopmentPath=<this folder> --extensionTestsPath=<this folder>/out/integration/index.js` on a copy
   of a mod project. The test installs the runtime, then covers:

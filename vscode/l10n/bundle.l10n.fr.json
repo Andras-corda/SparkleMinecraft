@@ -189,8 +189,6 @@
   "fabric.mod.json is not valid JSON.": "fabric.mod.json n'est pas un JSON valide.",
   "The mappings of the project were not found: the runtime needs the names of Mojang (loom.officialMojangMappings()).": "Les mappings du projet n'ont pas été trouvés : le runtime a besoin des noms de Mojang (loom.officialMojangMappings()).",
   "Fabric API was not found in build.gradle: the runtime needs it (particles and resource reload).": "Fabric API n'a pas été trouvé dans build.gradle : le runtime en a besoin (particules et rechargement des ressources).",
-  "{0} {1} was not tested: the runtime was compiled on Forge 1.20.1 and 1.21.1, NeoForge 1.21.1 and Fabric 1.20.1 and 1.21.1.": "{0} {1} n'a pas été testé : le runtime a été compilé sur Forge 1.20.1 et 1.21.1, NeoForge 1.21.1 et Fabric 1.20.1 et 1.21.1.",
-  "Minecraft {0} is newer than 1.21.1: the particle classes of the game may have changed and the runtime may not compile.": "Minecraft {0} est plus récent que 1.21.1 : les classes de particules du jeu ont pu changer et le runtime risque de ne pas compiler.",
   "No Forge, NeoForge or Fabric mod found in this folder (no mods.toml, neoforge.mods.toml or fabric.mod.json).": "Aucun mod Forge, NeoForge ou Fabric dans ce dossier (pas de mods.toml, neoforge.mods.toml ni fabric.mod.json).",
   "The version of Minecraft was not found (minecraft_version in gradle.properties).": "La version de Minecraft n'a pas été trouvée (minecraft_version dans gradle.properties).",
   "The mod id was not found (mod_id in gradle.properties, modId in mods.toml or id in fabric.mod.json).": "Le mod id n'a pas été trouvé (mod_id dans gradle.properties, modId dans mods.toml ou id dans fabric.mod.json).",
@@ -206,5 +204,7 @@
   "The emitter \"{0}\" receives events that the emitter of the ID {1} does not send: switch on its module \"{2}\".": "L'émetteur « {0} » reçoit des événements que l'émetteur d'ID {1} n'envoie pas : activez son module « {2} ».",
   "The emitter \"{0}\" sends collision events but has no Collision module: its particles never hit anything.": "L'émetteur « {0} » envoie des événements de collision mais n'a pas de module Collision : ses particules ne touchent jamais rien.",
   "The emitter \"{0}\" uses a user parameter that no longer exists (module {1}).": "L'émetteur « {0} » utilise un paramètre utilisateur qui n'existe plus (module {1}).",
-  "fabric.mod.json cannot be read.": "fabric.mod.json ne peut pas être lu."
+  "fabric.mod.json cannot be read.": "fabric.mod.json ne peut pas être lu.",
+  "{0} {1} was not tested: the runtime was compiled on {2}.": "{0} {1} n'a pas été testé : le runtime a été compilé sur {2}.",
+  "Minecraft {0} is newer than {1}, the last version tested: the classes of the game may have changed and the runtime may not compile.": "Minecraft {0} est plus récent que {1}, la dernière version testée : les classes du jeu ont pu changer et le runtime pourrait ne pas compiler."
 }

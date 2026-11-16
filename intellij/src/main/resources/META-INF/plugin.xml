@@ -1,0 +1,54 @@
+<idea-plugin>
+    <id>com.mineengine.sparkle</id>
+    <name>Sparkle Particles for Minecraft Mods</name>
+    <vendor url="https://github.com/Andras-corda/SparkleMinecraft">Andras</vendor>
+
+    <description><![CDATA[
+    <p>Particle systems for Minecraft mods (Forge, NeoForge, Fabric): a visual editor with templates and a live 3D
+    preview, and a small Java runtime that plays them in the game.</p>
+    <ul>
+      <li><b>New particle system</b> (File | New, or Tools | Sparkle): pick a template (Sparks, Beam, Fountain, Bounce,
+      Ribbon, Empty). The file goes to <code>src/main/resources/assets/&lt;mod id&gt;/sparkle/&lt;name&gt;.json</code>.</li>
+      <li><b>Visual editor</b> for every <code>assets/&lt;namespace&gt;/sparkle/*.json</code> file: emitters, modules,
+      user parameters and an animated 3D preview. The JSON text is one click away, with completion and validation.
+      Undo, redo and save work as for any file.</li>
+      <li><b>Install the runtime in the mod</b>: the loader, the Minecraft version, the mod id and the package are
+      found, and a file changed by hand is never replaced without asking.</li>
+      <li><b>Copy the code that plays the system</b>: <code>Sparkle.play(level, "mymod:fire", x, y, z);</code></li>
+    </ul>
+    <p>The same editor and the same runtime as the Sparkle extension for VS Code.</p>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.json</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileEditorProvider implementation="com.mineengine.sparkle.editor.SparkleEditorProvider"/>
+        <notificationGroup id="Sparkle" displayType="BALLOON"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory implementation="com.mineengine.sparkle.SparkleSchemaProviderFactory"/>
+    </extensions>
+
+    <actions>
+        <action id="Sparkle.NewSystem" class="com.mineengine.sparkle.NewSystemAction" text="New Particle System"
+                description="Creates a Sparkle particle system from a template" icon="/icons/sparkle.svg">
+            <add-to-group group-id="NewGroup" anchor="last"/>
+        </action>
+        <action id="Sparkle.CopyPlayCode" class="com.mineengine.sparkle.CopyPlayCodeAction" text="Copy the Code That Plays the System"
+                description="Copies Sparkle.play(...) for the selected particle system">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorTabPopupMenu" anchor="last"/>
+        </action>
+        <action id="Sparkle.InstallRuntime" class="com.mineengine.sparkle.InstallRuntimeAction" text="Install or Update the Runtime in the Mod"
+                description="Writes the Java runtime of Sparkle in the mod project"/>
+
+        <group id="Sparkle.ToolsMenu" text="Sparkle" popup="true" icon="/icons/sparkle.svg">
+            <reference ref="Sparkle.NewSystem"/>
+            <reference ref="Sparkle.InstallRuntime"/>
+            <reference ref="Sparkle.CopyPlayCode"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
+    </actions>
+</idea-plugin>

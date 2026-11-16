@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { Manifest, patchFabricModJson, planInstall } from '../src/shared/install';
-import { detectProject, fillTemplate, Project, ProjectFiles, runtimeFolders, support } from '../src/shared/project';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { detectProject, fillTemplate, LATEST_TESTED, Loader, Project, ProjectFiles, RENAMES, runtimeFolders, support } from '../src/shared/project';
 
 function files(map: Record<string, string>): ProjectFiles {
     return {
@@ -76,15 +78,59 @@ test('a Fabric project with Yarn is refused with the reason', async () => {
 test('versions before 1.20 are refused, newer ones are allowed with a warning', () => {
     const base: Project = { loader: 'forge', modId: 'm', modPackage: 'p', mappings: 'mojang', fabricApi: false, problems: [] };
     assert.equal(support({ ...base, minecraft: '1.19.2' }).supported, false);
-    const newer = support({ ...base, minecraft: '1.21.4' });
+    const newer = support({ ...base, minecraft: '27.1' });
     assert.ok(newer.supported && !newer.tested);
-    assert.ok(newer.problems.some(p => p.text.includes('newer than 1.21.1')));
+    assert.ok(newer.problems.some(p => p.text.includes('newer than') && p.args.includes(LATEST_TESTED)));
     assert.equal(support({ ...base, loader: 'neoforge', minecraft: '1.20.1' }).adapter, 'forge');
     assert.equal(support({ ...base, loader: 'neoforge', minecraft: '1.20.4' }).supported, false);
 });
 
+test('the runtime folders and renames follow the version of Minecraft and the loader', () => {
+    const base: Project = { modId: 'm', modPackage: 'p', mappings: 'mojang', fabricApi: true, problems: [] };
+    const of = (loader: Loader, minecraft: string) => {
+        const result = support({ ...base, loader, minecraft });
+        return { folders: runtimeFolders(result), renames: (result.renames ?? []).map(r => r.to) };
+    };
+
+    assert.deepEqual(of('fabric', '1.21.8'), { folders: ['common', 'mc1.21', 'fabric'], renames: [] });
+    assert.deepEqual(of('fabric', '1.21.9').folders, ['common', 'mc1.21', 'mc1.21.9', 'fabric']);
+    assert.deepEqual(of('neoforge', '1.21.3').folders, ['common', 'mc1.21', 'neoforge']);
+    assert.deepEqual(of('neoforge', '1.21.4').folders, ['common', 'mc1.21', 'neoforge', 'neoforge-1.21.4']);
+    assert.deepEqual(of('forge', '1.21.5').renames, []);
+    assert.deepEqual(of('forge', '1.21.6').renames, ['net.minecraftforge.eventbus.api.listener.SubscribeEvent']);
+    assert.deepEqual(of('neoforge', '1.21.11').renames, ['Identifier']);
+    assert.deepEqual(of('fabric', '26.1').renames, ['Identifier', 'getLightCoords', 'ParticleProviderRegistry']);
+    assert.deepEqual(of('forge', '26.3').renames, ['net.minecraftforge.eventbus.api.listener.SubscribeEvent', 'Identifier', 'getLightCoords']);
+});
+
+test('every runtime folder that can be chosen exists', () => {
+    const base: Project = { modId: 'm', modPackage: 'p', mappings: 'mojang', fabricApi: true, problems: [] };
+    for (const loader of ['forge', 'neoforge', 'fabric'] as const) {
+        for (const minecraft of ['1.20.1', '1.20.6', '1.21.1', '1.21.5', '1.21.9', '1.21.11', '26.1', '26.3']) {
+            const result = support({ ...base, loader, minecraft });
+            for (const folder of result.supported ? runtimeFolders(result) : []) {
+                assert.ok(existsSync(join(__dirname, '..', '..', 'runtime', folder)), `${loader} ${minecraft}: runtime/${folder}`);
+            }
+        }
+    }
+});
+
+test('Minecraft 26.1 and later needs no mappings', () => {
+    const result = support({ loader: 'fabric', minecraft: '26.1', modId: 'm', modPackage: 'p', mappings: 'unknown', fabricApi: true, problems: [] });
+    assert.ok(result.supported);
+    assert.ok(!result.problems.some(p => p.text.includes('mappings')));
+});
+
 test('the templates take the package and the mod id', () => {
     assert.equal(fillTemplate('package __PACKAGE__; "__MODID__"', 'a.b.sparkle', 'mod'), 'package a.b.sparkle; "mod"');
+});
+
+test('the renames change whole names only', () => {
+    const renames = RENAMES.filter(r => r.to === 'Identifier' || r.loader === 'forge');
+    assert.equal(fillTemplate('import net.minecraft.resources.ResourceLocation; ResourceLocations', 'p', 'm', renames),
+        'import net.minecraft.resources.Identifier; ResourceLocations');
+    assert.equal(fillTemplate('import net.minecraftforge.eventbus.api.SubscribeEvent;', 'p', 'm', renames),
+        'import net.minecraftforge.eventbus.api.listener.SubscribeEvent;');
 });
 
 const hash = (text: string) => `h${text.replace(/\r\n/g, '\n').length}:${text.replace(/\r\n/g, '\n')}`;

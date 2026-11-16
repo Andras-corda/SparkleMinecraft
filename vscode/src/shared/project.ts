@@ -157,15 +157,67 @@ export function compareVersions(a: readonly number[], b: readonly number[]): num
 export interface Support {
     /** The runtime can be installed (a refusal says why in the problems). */
     readonly supported: boolean;
-    /** The combination was compiled by the tests of the plugin (1.20.1 and 1.21.1). */
+    /** The combination was compiled by the tests of the plugin (test-runtime/compile.mjs). */
     readonly tested: boolean;
     readonly adapter?: Loader;
     readonly variant?: McVariant;
+    /** Minecraft 1.21.9 and later: the particles of one quad are SingleQuadParticle (folder mc1.21.9). */
+    readonly quadParticles?: boolean;
+    /** Folders of the loader adapter for its newer versions, copied after it (neoforge-1.21.4). */
+    readonly adapterUpdates?: readonly string[];
+    /** Names of the game changed by Mojang, replaced in the files of the runtime when they are installed. */
+    readonly renames?: readonly Rename[];
     readonly problems: readonly Message[];
 }
 
-/** The combinations compiled by the tests of the plugin. */
-export const TESTED: readonly string[] = ['forge 1.20.1', 'forge 1.21.1', 'neoforge 1.21.1', 'fabric 1.20.1', 'fabric 1.21.1'];
+/** A name of the game (or of a loader) that changed: the runtime is written with the old one. */
+export interface Rename {
+    /** First version of Minecraft with the new name. */
+    readonly since: readonly number[];
+    /** Only for this loader. */
+    readonly loader?: Loader;
+    readonly from: string;
+    readonly to: string;
+}
+
+export const RENAMES: readonly Rename[] = [
+    { since: [1, 21, 6], loader: 'forge', from: 'net.minecraftforge.eventbus.api.SubscribeEvent', to: 'net.minecraftforge.eventbus.api.listener.SubscribeEvent' },
+    { since: [1, 21, 11], from: 'ResourceLocation', to: 'Identifier' },
+    { since: [26, 1, 0], from: 'getLightColor', to: 'getLightCoords' },
+    { since: [26, 1, 0], loader: 'fabric', from: 'ParticleFactoryRegistry', to: 'ParticleProviderRegistry' },
+];
+
+/**
+ * The versions the runtime was compiled on by test-runtime/compile.mjs: every release of Minecraft of the loader from
+ * "from" to "to". Same list in the IntelliJ plugin (ProjectDetection.kt).
+ */
+export const TESTED: readonly { readonly loader: Loader; readonly from: string; readonly to: string }[] = [
+    { loader: 'forge', from: '1.20.1', to: '1.20.1' },
+    { loader: 'forge', from: '1.21.1', to: '26.3' },
+    { loader: 'neoforge', from: '1.20.6', to: '1.20.6' },
+    { loader: 'neoforge', from: '1.21.1', to: '26.3' },
+    { loader: 'fabric', from: '1.20.1', to: '1.20.1' },
+    { loader: 'fabric', from: '1.20.4', to: '1.20.4' },
+    { loader: 'fabric', from: '1.21.1', to: '26.3' },
+];
+
+/** The last version of Minecraft the runtime was compiled on. */
+export const LATEST_TESTED = '26.3';
+
+export function isTested(loader: Loader, version: readonly number[]): boolean {
+    return TESTED.some(t => t.loader === loader
+        && compareVersions(version, parseVersion(t.from)!) >= 0 && compareVersions(version, parseVersion(t.to)!) <= 0);
+}
+
+/** "Forge 1.20.1, 1.21.1–26.3; NeoForge 1.20.6, 1.21.1–26.3; Fabric ..." */
+export function testedText(): string {
+    const byLoader = new Map<Loader, string[]>();
+    for (const t of TESTED) {
+        byLoader.set(t.loader, [...(byLoader.get(t.loader) ?? []), t.from === t.to ? t.from : `${t.from}–${t.to}`]);
+    }
+
+    return [...byLoader].map(([loader, versions]) => `${loaderName(loader)} ${versions.join(', ')}`).join('; ');
+}
 
 export function support(project: Project): Support {
     const problems: Message[] = [...project.problems];
@@ -200,12 +252,14 @@ export function support(project: Project): Support {
         return refuse('NeoForge {0} is not supported: NeoForge 1.20.1 or 1.20.5 and later.', project.minecraft ?? '');
     }
 
+    // Minecraft 26.1 and later is not obfuscated: no mappings.
+    const unobfuscated = compareVersions(version, [26, 1, 0]) >= 0;
     if (project.loader === 'fabric') {
-        if (project.mappings === 'yarn') {
+        if (project.mappings === 'yarn' && !unobfuscated) {
             return refuse('This Fabric project uses the Yarn mappings: the runtime of Sparkle is written with the names of Mojang. Switch to "mappings loom.officialMojangMappings()" in build.gradle.');
         }
 
-        if (project.mappings === 'unknown') {
+        if (project.mappings === 'unknown' && !unobfuscated) {
             problems.push(message('The mappings of the project were not found: the runtime needs the names of Mojang (loom.officialMojangMappings()).'));
         }
 
@@ -214,17 +268,22 @@ export function support(project: Project): Support {
         }
     }
 
-    const tested = TESTED.includes(`${project.loader} ${version[0]}.${version[1]}.${version[2]}`);
+    const tested = isTested(project.loader, version);
     if (!tested) {
-        problems.push(message('{0} {1} was not tested: the runtime was compiled on Forge 1.20.1 and 1.21.1, NeoForge 1.21.1 and Fabric 1.20.1 and 1.21.1.',
-            loaderName(project.loader), project.minecraft ?? ''));
+        problems.push(message('{0} {1} was not tested: the runtime was compiled on {2}.', loaderName(project.loader), project.minecraft ?? '', testedText()));
     }
 
-    if (compareVersions(version, [1, 21, 1]) > 0) {
-        problems.push(message('Minecraft {0} is newer than 1.21.1: the particle classes of the game may have changed and the runtime may not compile.', project.minecraft ?? ''));
+    const latest = parseVersion(LATEST_TESTED)!;
+    if (compareVersions(version, latest) > 0) {
+        problems.push(message('Minecraft {0} is newer than {1}, the last version tested: the classes of the game may have changed and the runtime may not compile.',
+            project.minecraft ?? '', LATEST_TESTED));
     }
 
-    return { supported: true, tested, adapter, variant, problems };
+    const quadParticles = compareVersions(version, [1, 21, 9]) >= 0;
+    const renames = RENAMES.filter(r => compareVersions(version, r.since) >= 0 && (!r.loader || r.loader === adapter));
+    // NeoForge 1.21.4 and later: no "bus" in @EventBusSubscriber, and named reload listeners.
+    const adapterUpdates = adapter === 'neoforge' && compareVersions(version, [1, 21, 4]) >= 0 ? ['neoforge-1.21.4'] : [];
+    return { supported: true, tested, adapter, variant, quadParticles, adapterUpdates, renames, problems };
 }
 
 export function loaderName(loader: Loader): string {
@@ -236,12 +295,20 @@ export function runtimePackage(project: Project): string {
     return `${project.modPackage}.sparkle`;
 }
 
-/** The runtime folders to copy, in this order: common, variant, loader. */
+/**
+ * The runtime folders to copy, in this order: common, variant, loader. A file of a later folder replaces the file of
+ * the same name of an earlier one (mc1.21.9/SparkleParticle.java replaces common/SparkleParticle.java).
+ */
 export function runtimeFolders(support: Support): string[] {
-    return ['common', `mc${support.variant}`, support.adapter ?? 'forge'];
+    return ['common', `mc${support.variant}`, ...(support.quadParticles ? ['mc1.21.9'] : []), support.adapter ?? 'forge', ...(support.adapterUpdates ?? [])];
 }
 
-/** A file of the runtime with its tokens replaced. */
-export function fillTemplate(text: string, packageName: string, modId: string): string {
-    return text.replace(/__PACKAGE__/g, packageName).replace(/__MODID__/g, modId);
+/** A file of the runtime with its tokens replaced, and the names changed by Mojang since it was written. */
+export function fillTemplate(text: string, packageName: string, modId: string, renames: readonly Rename[] = []): string {
+    let result = text.replace(/__PACKAGE__/g, packageName).replace(/__MODID__/g, modId);
+    for (const rename of renames) {
+        result = result.replace(new RegExp(`\\b${rename.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g'), rename.to);
+    }
+
+    return result;
 }

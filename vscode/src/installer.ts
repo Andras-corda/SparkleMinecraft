@@ -50,7 +50,7 @@ export async function installRuntime(context: vscode.ExtensionContext, output: v
         for (const [name, type] of await vscode.workspace.fs.readDirectory(source)) {
             if (type === vscode.FileType.File && name.endsWith('.java')) {
                 const text = (await readText(vscode.Uri.joinPath(source, name))) ?? '';
-                wanted.set(`${javaFolder}/${name}`, fillTemplate(text, packageName, project.modId!));
+                wanted.set(`${javaFolder}/${name}`, fillTemplate(text, packageName, project.modId!, result.renames));
             }
         }
     }

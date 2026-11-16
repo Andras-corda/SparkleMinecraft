@@ -7,7 +7,7 @@ Utilisable avec : **Forge, NeoForge et Fabric**
 | Dossier | État | Contenu |
 | --- | --- | --- |
 | [vscode](vscode/README.md) | Version 0.1.0 | Editeur de systèmes de particules, aperçu 3D, runtime Java multi-loader |
-| [intellij](intellij/README.md) | À faire | |
+| [intellij](intellij/README.md) | Version 0.1.0 | Même éditeur (JCEF) et même runtime que VS Code, IntelliJ 2024.3+ |
 | [mcreator](mcreator/README.md) | À faire | |
 | [blockbench](blockbench/README.md) | À faire | |
 

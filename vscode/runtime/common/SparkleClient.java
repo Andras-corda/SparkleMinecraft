@@ -3,6 +3,7 @@ package __PACKAGE__;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.util.RandomSource;
 
 /**
  * The client side of Sparkle, shared by the loaders: what a received Sparkle particle does, and the reload of the
@@ -21,6 +22,12 @@ public final class SparkleClient {
     /** Forgets the systems read: the resources were reloaded. */
     public static void reload() {
         SparkleSystems.clear();
+    }
+
+    /** The provider of Minecraft 1.21.9 and later (with a random source). */
+    private static Particle create(SparkleOptions options, ClientLevel level, double x, double y, double z, double xd, double yd, double zd,
+            RandomSource random) {
+        return create(options, level, x, y, z, xd, yd, zd);
     }
 
     private static Particle create(SparkleOptions options, ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {

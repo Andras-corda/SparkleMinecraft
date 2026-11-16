@@ -74,18 +74,26 @@ Côté client, rien à écrire : le système est lu dans les ressources la premi
 | `runtime/common` | toujours : API, lecture des systèmes, particules |
 | `runtime/mc1.20` | Minecraft 1.20 à 1.20.4 (ancien format réseau des particules) |
 | `runtime/mc1.21` | Minecraft 1.20.5 et plus (`MapCodec` et `StreamCodec`) |
+| `runtime/mc1.21.9` | Minecraft 1.21.9 et plus : remplace la particule de `common` (`SingleQuadParticle`) |
 | `runtime/forge`, `runtime/neoforge`, `runtime/fabric` | le loader du projet |
+| `runtime/neoforge-1.21.4` | NeoForge 1.21.4 et plus : remplace les deux classes de `neoforge` |
+
+Un fichier d'un dossier suivant remplace le fichier du même nom d'un dossier précédent. Les noms changés par Mojang ou
+par un loader sont remplacés à l'écriture du runtime : `ResourceLocation` devient `Identifier` à partir de 1.21.11,
+`getLightColor` devient `getLightCoords` à partir de 26.1, Forge 1.21.6 et plus prend le `SubscribeEvent`
+d'EventBus 7, et Fabric API 26.1 et plus son `ParticleProviderRegistry`.
 
 ## Versions prises en charge
 
 | Loader | Testé (compilé) | Accepté avec un avertissement | Refusé |
 | --- | --- | --- | --- |
-| Forge | 1.20.1, 1.21.1 | 1.20.2 à 1.20.6, après 1.21.1 | avant 1.20 |
-| NeoForge | 1.21.1 | 1.20.1 (traité comme Forge), 1.20.5 à 1.21, après 1.21.1 | 1.20.2 à 1.20.4, avant 1.20 |
-| Fabric | 1.20.1, 1.21.1 | 1.20.2 à 1.20.6, après 1.21.1 | mappings **Yarn**, avant 1.20 |
+| Forge | 1.20.1, toutes les versions de 1.21.1 à 26.3 | les autres 1.20.x, 1.21, après 26.3 | avant 1.20 |
+| NeoForge | 1.20.6, toutes les versions de 1.21.1 à 26.3 | 1.20.1 (traité comme Forge), 1.20.5, 1.21, après 26.3 | 1.20.2 à 1.20.4, avant 1.20 |
+| Fabric | 1.20.1, 1.20.4, toutes les versions de 1.21.1 à 26.3 | les autres 1.20.x, 1.21, après 26.3 | mappings **Yarn**, avant 1.20 |
 
-« Testé » veut dire : le runtime compile, sans avertissement, dans un vrai projet Gradle de ce loader et de cette
-version. Les systèmes n'ont **pas encore été joués en jeu** (voir les limites).
+« Testé » veut dire : le runtime compile dans un vrai projet Gradle de ce loader et de cette version, créé par
+`test-runtime/compile.mjs` avec le plugin Gradle du loader (Fabric Loom, ModDevGradle, ForgeGradle). Minecraft 26.1
+et plus n'est plus obfusqué : un projet Fabric n'a pas besoin de mappings.
 
 ## Sécurité de l'installation
 
@@ -99,8 +107,8 @@ version. Les systèmes n'ont **pas encore été joués en jeu** (voir les limite
 
 ## Limites connues
 
-- **Pas encore essayé en jeu.** Le runtime compile sur les 5 combinaisons testées, et l'aperçu suit les mêmes
-  règles, mais aucun client Minecraft n'a été lancé. C'est le prochain test à faire.
+- **Pas encore essayé en jeu.** Le runtime compile sur toutes les versions testées, et l'aperçu suit les mêmes
+  règles, mais aucun client Minecraft n'a été lancé, sur aucune version. C'est le prochain test à faire.
 - **Fabric avec Yarn** : refusé. Le runtime est écrit avec les noms de Mojang ; il faut
   `mappings loom.officialMojangMappings()` dans `build.gradle`. Fabric API est nécessaire.
 - **Projets multi-loader** (Architectury, MultiLoader) : on peut installer dans chaque sous-projet de loader, mais

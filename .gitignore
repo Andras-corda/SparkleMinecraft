@@ -31,3 +31,8 @@ desktop.ini
 .env
 .env.*
 *.pat
+# IntelliJ Platform Gradle Plugin
+.intellijPlatform/
+
+# Compile tests of the runtime
+vscode/test-runtime/work/

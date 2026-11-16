@@ -79,7 +79,7 @@ public final class SparkleParticle extends TextureSheetParticle {
         zd += emitter.gravityZ;
         double mx = xd, my = yd, mz = zd;
         if (emitter.collides) {
-            Vec3 moved = Entity.collideBoundingBox(null, new Vec3(xd, yd, zd), getBoundingBox(), level, List.of());
+            Vec3 moved = Entity.collideBoundingBox((Entity) null, new Vec3(xd, yd, zd), getBoundingBox(), level, List.of());
             mx = moved.x;
             my = moved.y;
             mz = moved.z;
